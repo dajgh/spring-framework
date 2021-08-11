@@ -12,10 +12,13 @@ public class IocTest {
 
 	@Test
 	public void testIoc(){
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:ApplicationContext.xml");
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:ApplicationContext.xml");
 //		XxService xxService = applicationContext.getBean(XxService.class);
 //		System.out.println("xxService = " + xxService);
 		AService aService = applicationContext.getBean(AService.class);
 		aService.sayHello();
+
+
+		applicationContext.close();
 	}
 }
