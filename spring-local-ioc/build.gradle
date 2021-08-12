@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group 'com.bily'
+// 默认版本
+version '5.1.21.BUILD-SNAPSHOT'
+
+
+//手动修改
+sourceCompatibility = 11
+//sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //手动添加依赖
+    compile(project(":spring-context"))
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
