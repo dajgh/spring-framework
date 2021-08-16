@@ -83,7 +83,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 						throw new BeanInstantiationException(clazz, "No default constructor found", ex);
 					}
 				}
-			}
+			}//实际实例化
 			return BeanUtils.instantiateClass(constructorToUse);
 		}
 		else {
