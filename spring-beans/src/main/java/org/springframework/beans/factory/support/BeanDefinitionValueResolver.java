@@ -107,7 +107,8 @@ class BeanDefinitionValueResolver {
 		// to another bean to be resolved.
 		if (value instanceof RuntimeBeanReference) {
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
-			return resolveReference(argName, ref);//
+			//解析被依赖的bean
+			return resolveReference(argName, ref);
 		}
 		else if (value instanceof RuntimeBeanNameReference) {
 			String refName = ((RuntimeBeanNameReference) value).getBeanName();
@@ -300,8 +301,10 @@ class BeanDefinitionValueResolver {
 				bean = this.beanFactory.getParentBeanFactory().getBean(refName);
 			}
 			else {
-				bean = this.beanFactory.getBean(refName);//直接从beanFactory获取
-				this.beanFactory.registerDependentBean(refName, this.beanName);//注册,集合维护两组映射关系,a->b,b->a,
+				//直接从beanFactory获取
+				bean = this.beanFactory.getBean(refName);
+				//注册,集合维护两组映射关系,a->b,b->a,
+				this.beanFactory.registerDependentBean(refName, this.beanName);
 			}
 			if (bean instanceof NullBean) {
 				bean = null;
