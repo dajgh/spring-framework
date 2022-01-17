@@ -123,13 +123,13 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
-			reader.loadBeanDefinitions(configResources);
+			reader.loadBeanDefinitions(configResources);//根据Resource加载资源
 		}
 		//声明的配置参数: classpath:ApplicationContext.xml
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
-			//这里
-			reader.loadBeanDefinitions(configLocations);
+			//一般这里,底层还是上面的分支
+			reader.loadBeanDefinitions(configLocations);//按照location加载资源,底层还是转变为了根据Resource加载资源
 		}
 	}
 
