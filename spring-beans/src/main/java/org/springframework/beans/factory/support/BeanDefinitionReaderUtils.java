@@ -60,10 +60,10 @@ public abstract class BeanDefinitionReaderUtils {
 		GenericBeanDefinition bd = new GenericBeanDefinition();
 		bd.setParentName(parentName);
 		if (className != null) {
-			if (classLoader != null) {
+			if (classLoader != null) {//默认为空
 				bd.setBeanClass(ClassUtils.forName(className, classLoader));
 			}
-			else {
+			else {//设置 className
 				bd.setBeanClassName(className);
 			}
 		}
@@ -163,13 +163,13 @@ public abstract class BeanDefinitionReaderUtils {
 
 		// Register bean definition under primary name.
 		String beanName = definitionHolder.getBeanName();
-		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
+		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());//注册bean定义
 
 		// Register aliases for bean name, if any.
 		String[] aliases = definitionHolder.getAliases();
 		if (aliases != null) {
 			for (String alias : aliases) {
-				registry.registerAlias(beanName, alias);
+				registry.registerAlias(beanName, alias);//注册别名
 			}
 		}
 	}

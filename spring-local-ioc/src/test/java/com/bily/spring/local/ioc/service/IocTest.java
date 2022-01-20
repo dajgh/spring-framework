@@ -18,7 +18,6 @@ public class IocTest {
 		AService aService = applicationContext.getBean(AService.class);
 		aService.sayHello();
 
-
 		applicationContext.close();
 	}
 }
