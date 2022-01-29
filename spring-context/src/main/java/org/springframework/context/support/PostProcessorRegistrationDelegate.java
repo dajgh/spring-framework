@@ -52,11 +52,16 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 	/**
-	 *  BeanDefinitionRegistryPostProcessor 是  BeanFactoryPostProcessor的子类, 多提供了一个向beanfactory增加bean定义的方法,
-	 *
-	 *  整个方法的逻辑是,获取 以上两类处理器,
-	 *  获取所有的前者, 执行其 追加方法,  然后执行其修改方法
-	 *  获取所有的后者,执行修改方法,
+	 * 有两种bean定义后置处理器:
+	 * BeanDefinitionRegistryPostProcessor 增加处理器
+	 * BeanFactoryPostProcessor 修改处理器
+	 * <p>
+	 * 前者是后者的子类
+	 * <p>
+	 * 以下方法不需要细看,
+	 * 主要就是 先执行所有 增加处理器方法, 然后执行修改处理器方法
+	 * 执行时,遵循排序规则,
+	 * 最先为 PriorityOrdered, 其次为Ordered , 其次为无顺序限制的处理器
 	 *
 	 * @param beanFactory
 	 * @param beanFactoryPostProcessors
@@ -72,15 +77,14 @@ final class PostProcessorRegistrationDelegate {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
-
+//
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {//子类可以实现bean定义的注册
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
-				}
-				else {
+				} else {
 					regularPostProcessors.add(postProcessor);
 				}
 			}
@@ -140,9 +144,7 @@ final class PostProcessorRegistrationDelegate {
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
-		}
-
-		else {
+		} else {
 			// Invoke factory processors registered with the context instance.
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
 		}
@@ -160,14 +162,11 @@ final class PostProcessorRegistrationDelegate {
 		for (String ppName : postProcessorNames) {
 			if (processedBeans.contains(ppName)) {
 				// skip - already processed in first phase above
-			}
-			else if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+			} else if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 				priorityOrderedPostProcessors.add(beanFactory.getBean(ppName, BeanFactoryPostProcessor.class));
-			}
-			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
+			} else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
 				orderedPostProcessorNames.add(ppName);
-			}
-			else {
+			} else {
 				nonOrderedPostProcessorNames.add(ppName);
 			}
 		}
@@ -223,11 +222,9 @@ final class PostProcessorRegistrationDelegate {
 				if (pp instanceof MergedBeanDefinitionPostProcessor) {
 					internalPostProcessors.add(pp);
 				}
-			}
-			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
+			} else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
 				orderedPostProcessorNames.add(ppName);
-			}
-			else {
+			} else {
 				nonOrderedPostProcessorNames.add(ppName);
 			}
 		}

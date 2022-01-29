@@ -412,7 +412,7 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
-		//实际解析逻辑, id name
+		//实际解析逻辑, 解析得到 id name
 		String id = ele.getAttribute(ID_ATTRIBUTE);
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 		List<String> aliases = new ArrayList<>();
@@ -433,7 +433,7 @@ public class BeanDefinitionParserDelegate {
 		if (containingBean == null) {//检查唯一性 beanName,
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-		//解析bean定义
+		//核心--解析bean定义
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -512,6 +512,7 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
+			//得到GenericBeanDefinition,设置beanClass和beanClassName
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
@@ -522,6 +523,7 @@ public class BeanDefinitionParserDelegate {
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
 			parseConstructorArgElements(ele, bd);
+			//字段属性
 			parsePropertyElements(ele, bd);
 			parseQualifierElements(ele, bd);
 
@@ -1383,11 +1385,26 @@ public class BeanDefinitionParserDelegate {
 		if (namespaceUri == null) {
 			return null;
 		}
+		//NamespaceHandler ,
+		/**
+		 * 加载 META-INF/spring.handlers, 得到map,
+		 * key是namespaceUri,value是 NamespaceHandler 的实现类
+		 * 关注resolve的解析逻辑以及内部初始化NamespaceHandler的逻辑及其实现
+		 */
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		/**
+		 * 上面的handler 初始化时有个init()执行, 往内部parse中注册不同上下文属性,
+		 * 如 context
+		 * ContextNamespaceHandler.init(), 有以下实现
+		 * 		registerBeanDefinitionParser("component-scan", new ComponentScanBeanDefinitionParser());
+		 * 	即
+		 * 	则 handler.parse() 会调用 ComponentScanBeanDefinitionParser 来扫描组间加载注册 bean定义
+		 *
+		 */
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
@@ -1415,14 +1432,14 @@ public class BeanDefinitionParserDelegate {
 
 		// Decorate based on custom attributes first.
 		NamedNodeMap attributes = ele.getAttributes();
-		for (int i = 0; i < attributes.getLength(); i++) {
+		for (int i = 0; i < attributes.getLength(); i++) {//标签属性解析,通过 namespace handler
 			Node node = attributes.item(i);
 			finalDefinition = decorateIfRequired(node, finalDefinition, containingBd);
 		}
 
 		// Decorate based on custom nested elements.
 		NodeList children = ele.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
+		for (int i = 0; i < children.getLength(); i++) {//标签下级属性解析,通过 namespace handler
 			Node node = children.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				finalDefinition = decorateIfRequired(node, finalDefinition, containingBd);
