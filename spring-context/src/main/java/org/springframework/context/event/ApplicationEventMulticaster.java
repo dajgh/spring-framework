@@ -33,7 +33,8 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @author Stephane Nicoll
  */
-public interface ApplicationEventMulticaster {
+public interface
+ApplicationEventMulticaster {
 
 	/**
 	 * Add a listener to be notified of all events.
