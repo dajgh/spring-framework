@@ -168,7 +168,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
-		//默认命名空间
+		/**
+		 * 默认命名空间
+		 * 节点的namespaceUrl为null或 http://www.springframework.org/schema/beans
+		 * 即为默认命名空间
+		 */
 		if (delegate.isDefaultNamespace(root)) {
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
@@ -310,11 +314,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
 		//解析bean定义, 封装得到 holder
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
-		if (bdHolder != null) {//装饰一下,默认情况下内部 无影响
+		if (bdHolder != null) {
+			//装饰一下,其实默认情况下内部 无影响,
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				// Register the final decorated instance.
-				//注册
+				//注册bean定义
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			}
 			catch (BeanDefinitionStoreException ex) {

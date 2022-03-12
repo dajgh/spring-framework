@@ -223,7 +223,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		//进入这里,因为 resourceLoader 实际是初始化指定的 applicationContext, 后者继承了前接口
 		if (resourceLoader instanceof ResourcePatternResolver) {
 			// Resource pattern matching available.
-			try {
+			try {//一个 string location 可能代表了多个资源 resource.
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
 				//加载
 				int count = loadBeanDefinitions(resources);

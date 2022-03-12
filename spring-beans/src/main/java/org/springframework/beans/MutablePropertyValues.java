@@ -75,7 +75,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 			PropertyValue[] pvs = original.getPropertyValues();
 			this.propertyValueList = new ArrayList<>(pvs.length);
 			for (PropertyValue pv : pvs) {
-				this.propertyValueList.add(new PropertyValue(pv));
+				this.propertyValueList.add(new PropertyValue(pv));//复制
 			}
 		}
 		else {
