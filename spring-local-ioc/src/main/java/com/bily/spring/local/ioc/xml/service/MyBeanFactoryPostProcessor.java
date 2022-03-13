@@ -1,4 +1,4 @@
-package com.bily.spring.local.ioc.service;
+package com.bily.spring.local.ioc.xml.service;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;

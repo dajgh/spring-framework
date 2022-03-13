@@ -1,4 +1,4 @@
-package com.bily.spring.local.ioc.service;
+package com.bily.spring.local.ioc.xml.service;
 
 /**
  * @author dajgh
